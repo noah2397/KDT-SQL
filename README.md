@@ -77,6 +77,9 @@
 | 2024.1.31 | MySQL시작(1)-mysql기본 커맨드 : show databases, 사용자 추가, ip 접속 허용, 데이터베이스 삭제, 비밀번호 변경 | [Naver Blog Link](https://blog.naver.com/mathnoah/223339262993) | DAY1 |
 | 2024.1.31 | MySQL시작(2)-DBeaver 연결, 기본 사용법, DBeaver Public Key Retrieval Error, Driver properties, allowPublickey | [Naver Blog Link](https://blog.naver.com/mathnoah/223339307659) | DAY1 |
 | 2024.1.31 | MySQL시작(3)-Sql 스크립트 | [Naver Blog Link](https://blog.naver.com/mathnoah/223339583146) | DAY1 |
+| 2024.2.01 | MySQL시작(4)- select, from ,where, group by, having, order by, 형식 문자열, 영구 테이브, 파생 테이블, 임시 테이블, 가상 테이블 | [Naver Blog Link](https://blog.naver.com/mathnoah/223340609092) | DAY2 |
+| 2024.2.01 | MySQL시작(5)-필터 | [Naver Blog Link](https://blog.naver.com/mathnoah/223340807632) | DAY2 |
+| 2024.2.01 | MYSQL시작(6) - csv 파일을 table로 바꾸기 | [Naver Blog Link](https://blog.naver.com/mathnoah/223341051021) | DAY2 |
 
 
 
