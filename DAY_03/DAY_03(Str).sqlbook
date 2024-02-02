@@ -1,0 +1,113 @@
+-- SQLBook: Code
+-- Active: 1706681927328@@127.0.0.1@3306@testdb
+use testdb;
+CREATE TABLE string_tbl
+(char_fld CHAR(30),
+vchar_fld VARCHAR(30),
+text_fld TEXT
+);
+INSERT INTO string_tbl (char_fld,	vchar_fld,	text_fld)
+VALUES ('This	is	char	data',
+'This	is	varchar	data',
+'This	is	text	data')
+-- SQLBook: Code
+SELECT *	FROM string_tbl;
+-- SQLBook: Code
+UPDATE string_tbl -- update문으로 vchar_fld열 varchar(30)에 설정 길이보다 더 긴 문자열 저장
+SET vchar_fld =	'This	is	a	piece	of	extremely	long	varchar	data'; -- 46글자
+-- SQLBook: Code
+-- ANSI 모드 선택
+-- 문자열을 최대 크기로 자르고 경고만 생성
+select @@session.sql_mode; -- 현재 모드 확인
+-- SQLBook: Code
+set sql_mode='ansi'; -- 해당 모드로 바꾸게 되면, 문자열이 크면 자동으로 잘려서 저장된다
+-- SQLBook: Code
+-- 작은 따옴표를 포함시키기
+-- 1. 작은 따옴표를 하나 더 추가
+update string_tbl
+set text_fld =	'This	string	didn''t	work,	but	it	does	now';
+-- 2. 백슬래시('\') 문자 추가
+update string_tbl
+set text_fld =	'This	string	didn\'t	work,	but	it	does	now';
+-- SQLBook: Code
+-- quote() 내장 함수 : 전체 문자열을 따옴표로 묶고, 문자열 내부의 작은 따옴표에 escape 문자를 추가
+select quote(text_fld)
+from string_tbl;
+-- SQLBook: Code
+--length() 함수:	문자열의 개수를 반환
+SELECT length(char_fld)	as char_length,
+length(vchar_fld)	as varchar_length,
+length(text_fld)	as text_length
+FROM string_tbl;
+-- SQLBook: Code
+-- position() 함수
+-- 부분 문자열의 위치를 반환
+-- MySQL의 문자열 인덱스: 1부터 시작
+-- 부분 문자열을 찾을 수 없는 경우, 0을 반환함
+update string_tbl set vchar_fld="This string is 28 characters";
+SELECT position('characters' in vchar_fld)
+FROM string_tbl;
+-- SQLBook: Code
+-- locate(‘문자열’, 열이름, 시작위치) 함수
+-- 시작위치부터 문자열 검색: 처음 발견되는 인덱스 리턴
+SELECT locate('is',	vchar_fld,	5)
+FROM string_tbl;
+-- SQLBook: Code
+-- strcmp(‘문자열1’, ‘문자열2’) 함수:	문자열 비교
+-- 대소문자 구분 안함
+-- • if	문자열1 < 문자열2, -1 반환: 정렬 순서에서 문자열1이 문자열2의 앞에 오는 경우
+-- • if	문자열1 == 문자열2, 0 반환: 문자열이 동일
+-- • if	문자열1 > 문자열2, 1 반환: 문자열1이 문자열2의 뒤에 오는 경우
+SELECT  strcmp('12345',	'12345')	12345_12345,
+	    strcmp('abcd',	'xyz')	abcd_xyz,
+        strcmp('abcd',	'QRSTUV')	abcd_QRSTUV,
+        strcmp('qrstuv',	'QRSTUV')	qrstuv_QRSTUV,
+        strcmp('12345',	'xyz')	12345_xyz,
+        strcmp('xyz',	'qrstuv')	xyz_qrstuv;
+-- SQLBook: Code
+select strcmp('text','text2');
+-- SQLBook: Code
+-- like 또는 regexp 연산자 사용
+-- select 절에 like 연산자나 regexp 연산자를 사용
+-- • 0 또는 1의 값을 반환
+use sakila;
+SELECT name,	name LIKE '%y' ends_in_y
+FROM category;
+SELECT name,	name REGEXP 'y$' ends_in_y
+FROM category;
+-- SQLBook: Code
+-- Active: 1706681927328@@127.0.0.1@3306@testdb
+-- concat(): 문자열 추가 함수
+-- concat()	함수를 사용하여 string_tbl의 text_fld열에 저장된 문자열 수정
+-- 기존 text_fld의 문자열에 ',	but	now	it	is	longer’ 문자열 추가
+use testdb;
+UPDATE string_tbl
+SET text_fld =	CONCAT(text_fld,	',	but	now	it	is	longer');
+select text_fld from string_tbl;
+-- SQLBook: Code
+-- concat() 함수 활용
+-- 각 데이터 조각을 합쳐서 하나의 문자열 생성
+-- • concat() 함수 내부에서 date(create_date)를 문자열로 변환
+use sakila;
+#	concat()	함수 사용 #2
+SELECT concat(first_name,	'	',	last_name,
+'	has	been	a	customer	since	',	date(create_date))	as cust_narrative
+FROM customer;
+-- SQLBook: Code
+-- insert() 함수
+-- 4개의 인수로 구성
+-- insert(문자열, 시작위치, 길이, 새로운 문자열)
+-- • 세 번째 인수값(길이)=0: 새로운 문자열이 삽입
+SELECT INSERT('goodbye	world',	9,	0,	'cruel ')	as string;
+SELECT INSERT('goodbye	world',1,	7,	'hello')	as string;
+-- SQLBook: Code
+-- replace() 함수
+-- replace(문자열, 기존문자열, 새로운 문자열)
+-- 기존 문자열을 찾아서 제거하고, 새로운 문자열을 삽입
+
+SELECT replace('goodbye	world',	'goodbye',	'hello')	as replace_str;
+-- SQLBook: Code
+-- substr() 또는 substring() 함수
+-- substr(문자열, 시작위치, 개수)
+-- 문자열에서 시작 위치에서 개수만큼 추출
+SELECT substr('goodbye	cruel	world',	9,	5);

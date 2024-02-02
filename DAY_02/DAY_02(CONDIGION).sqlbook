@@ -1,0 +1,129 @@
+-- SQLBook: Code
+-- Active: 1706681927328@@127.0.0.1@3306@sakila
+select customer_id,	rental_date
+from rental
+where rental_date <	'2005-05-25';
+-- SQLBook: Code
+select customer_id,	rental_date
+from rental
+where rental_date <=	'2005-06-16'
+and rental_date >=	'2005-06-14';
+-- SQLBook: Code
+select customer_id,	rental_date
+from rental
+where date(rental_date)	<=	'2005-06-16'
+and date(rental_date)	>=	'2005-06-14'; # date를 사용하여 정확한 날짜만 추출
+-- SQLBook: Code
+-- between 연산자
+-- between [범위의 하한값] and [범위의 상한값]
+select customer_id,	rental_date
+from rental
+where date(rental_date)	between '2005-06-14' and '2005-06-16';
+-- SQLBook: Code
+-- 숫자 범위 사용
+-- 하한값과 상한값이 범위에 포함됨
+select customer_id,	payment_date,	amount
+from payment
+where amount	between 10.0 and 11.99;
+-- SQLBook: Code
+-- 문자열 범위
+-- last_name이 ‘FA’와 ‘FRB’로 시작하는 데이터 리턴
+select last_name,	first_name
+from customer
+where last_name between 'FA' and 'FRB';
+-- SQLBook: Code
+--  IN() 연산
+-- • 컬럼명 IN	(값1, 값2, ...)
+-- • 지정한 컬럼의 값이 특정 값에 해당되는 조건을 만들 때 사용 (or 대신 사용)
+select title,	rating
+from film
+where rating in ('G','PG'); -- OR을 쓰지 않고 IN으로 조건 구현 가능하다!
+-- SQLBook: Code
+-- 서브 쿼리 사용
+-- 값의 집합을 생성할 수 있음
+
+select title,	rating
+from film
+where rating	in (select rating	from film	where title	like '%PET%');
+-- • 서브 쿼리 내용
+-- - ‘PET’을 포함하는 영화 제목을 찾고, 그 영화 제목의 rating을 반환 (‘P’,	‘PG’)
+-- »‘PET%’:	PET로 시작하는 단어
+-- »‘%PET’:	PET로 끝나는 단어
+-- »‘%PET%’:	PET를 포함하는 단어
+-- • where 절 내용
+-- - where rating	in ('G',	'PG');
+-- SQLBook: Code
+-- not	in	사용
+-- 표현식 집합 내에 존재하지 않음
+select title,	rating
+from film
+where rating	not in ('PG-13',	'R',	'NC-17');
+-- • NOT	IN(‘PG-13’,	‘R’,	‘NC-17’)
+-- - 영화 등급이 ‘PG-13’,	‘R’,	‘NC-17’이 아닌 모든 영화를 찾음
+-- SQLBook: Code
+--  left(문자열, n)
+-- • 문자열의 가장 왼쪽부터 n개 가져옴
+select left('abcdefg',	3) -- abc
+-- SQLBook: Code
+-- mid(문자열, 시작 위치, n),
+-- • substr(문자, 시작 위치, n)도 동일한 기능 수행: 시작 위치는 1부터 시작
+select mid('abcdefg',	2,	3); -- bcd
+-- SQLBook: Code
+-- - right(문자열, n)
+-- • 문자열의 가장 오른쪽부터 n개 가져옴
+select right('abcdefg',	2); -- fg
+-- SQLBook: Code
+-- 일치 조건(matching	condition)
+-- §와일드 카드 사용시 LIKE 연산자를 사용
+select last_name,	first_name
+from customer
+where last_name like '_A_T%S';
+-- - ‘_A_T%S’:	
+-- »두 번째 위치에 ‘A’,	네 번째 위치에 ‘T’를 포함하며 마지막은 ‘S’로 끝나는 문자열
+-- SQLBook: Code
+-- - last_name이 ‘Q’로 시작하거나 ‘Y’로 시작하는 고객 이름 검색
+select last_name,	first_name
+from customer
+where last_name like 'Q%' or last_name like 'Y%';
+-- SQLBook: Code
+-- § 정규 표현식 사용
+-- § ‘^[QY]’:	Q	또는 Y로 시작하는 단어 검색
+select last_name,	first_name
+from customer
+where last_name	REGEXP '^[QY]';
+-- SQLBook: Code
+-- § Null값의 다양한 경우 
+-- §해당 사항 없음 
+-- §아직 알려지지 않은 값 
+-- §정의되지 않은 값
+-- Null 확인 방법 § is	null 사용 (= null)
+select rental_id,	customer_id,	return_date
+from rental
+where return_date is null;
+-- SQLBook: Code
+-- § is	not	null
+-- §열에 값이 할당되어 있는 경우 (null이 아닌 경우)
+select rental_id,	customer_id,	return_date
+from rental
+where return_date is not null;
+-- SQLBook: Code
+-- Null과 조건 조합 
+--  2005년 5월에서 8월 사이에 반납되지 않은 대여 정보 검색 
+--  • 반납이 되지 않은 경우, 반납 날짜의 값이 NULL 
+--  • 또는 반납 날짜가 2005년 5월~ 2005년 8월 사이가 아닌 경우
+select rental_id,	customer_id,	return_date
+from rental
+where return_date is null
+or return_date not between '2005-05-01' and '2005-09-01';
+-- SQLBook: Code
+select payment_id,	customer_id,	amount,	date(payment_date)	payment_date
+from payment
+where (payment_id between 101 and 120)
+and customer_id =	5 and not (amount	>	6 or date(payment_date)	=	'2005-06-19');
+-- SQLBook: Code
+select payment_id,	customer_id,	amount,	date(payment_date)	payment_date
+from payment
+where (payment_id between 101 and 120)
+and customer_id =	5 and (amount	<=	6 and  date(payment_date)	<>	'2005-06-19');
+-- SQLBook: Code
+create database sqlclass_db;

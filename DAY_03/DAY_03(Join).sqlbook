@@ -1,0 +1,112 @@
+-- SQLBook: Code
+-- Active: 1706681927328@@127.0.0.1@3306@sakila
+-- 교차 조인(cross join) : join의 조건이 없어 모든 행을 결합
+-- select (조회 컬럼) from 테이블명1 cross join 테이블명2;
+-- SQLBook: Code
+select c.first_name, c.last_name, a.address from customer as c cross join address as a;
+-- SQLBook: Code
+select c.first_name, c.last_name, a.address from customer as c join address as a;
+-- SQLBook: Code
+-- 내부 조인(inner join) : 두 개 이상의 테이블을 묶어서 하나의 결과 집합을 만들어내는 것
+-- select <열 목록> from <기준 테이블> [inner] join <참조할 테이블> on <조인 조건> [where 검색 조건]
+-- SQLBook: Code
+select c.first_name,c.last_name,a.address from customer	as c inner join address	as a on c.address_id =	a.address_id;
+-- SQLBook: Code
+-- 외부 조인(Outer Join) : 한쪽 테이블에만 존재하는 데이터들을 다른 테이블에 결합하는 방식
+select <열 목록> from <첫 번째 테이블(LEFT) <LEFT|RIGHT|FULL> outer join <두 번째 테이블(RIGHT)> on <조인 조건> [where 검색 조건]
+-- SQLBook: Code
+-- 이전 Join 문법 표기
+select c.first_name,	c.last_name,	a.address
+from customer	as c	join address	as a
+where c.address_id =	a.address_id and a.postal_code =	52137; -- where 절에 작성한다
+-- SQLBook: Code
+-- SQL92 문법 표기 :  Join 조건을 ON절에 작성한다
+select c.first_name,	c.last_name,	a.address,	a.postal_code
+from customer	as c	join address	as a
+				on c.address_id =	a.address_id
+where a.postal_code =	52137;
+-- SQLBook: Code
+select c.first_name,c.last_name,ct.city,a.address,a.district,a.postal_code
+from customer as c	
+inner join address as a
+on c.address_id =	a.address_id -- customer과 address 조인
+inner join city as ct
+on a.city_id =	ct.city_id; -- address와 city 조인
+-- Join 과정에서 from 절에 테이블의 순서는 중요하지 않음 : 데이터베이스 내부에서 결정
+-- SQLBook: Code
+-- 서브 쿼리를 사용하여 세 개 이상 테이블 조인
+
+select c.first_name,	c.last_name,	addr.address,	addr.city,	addr.district
+from customer	as c
+inner join
+(select a.address_id,	a.address,	ct.city,	a.district
+from address	as a
+inner join city	as	ct -- 내부에서 join을 함
+on a.city_id =	ct.city_id
+where a.district =	'California'
+)	as addr
+on c.address_id =	addr.address_id; -- 최종적으로 join을 함
+
+-- SQLBook: Code
+select f.title
+from film as f
+inner join film_actor as fa
+on f.film_id =	fa.film_id
+inner join actor a
+on fa.actor_id =	a.actor_id
+where ((a.first_name =	'CATE' and a.last_name =	'MCQUEEN')  -- Cate McQueen과 Cuba Birch가 출연한 모든 영화 제목 검색
+or (a.first_name =	'CUBA' and a.last_name =	'BIRCH'));
+-- SQLBook: Code
+select f.title
+from film	as f
+inner join film_actor as fa1
+on f.film_id =	fa1.film_id
+inner join actor	a1	 #	film,	film_actor,	actor	내부 조인 #1
+on fa1.actor_id	=	a1.actor_id
+inner join film_actor as fa2
+on f.film_id =	fa2.film_id
+inner join actor	a2	 # film,	film_actor,	actor	내부 조인 #2
+on fa2.actor_id	=	a2.actor_id
+where (a1.first_name	=	'CATE' and a1.last_name	=	'MCQUEEN')	
+and (a2.first_name	=	'CUBA' and a2.last_name	=	'BIRCH');
+-- § film 테이블에서 film_actor 테이블에 두 행(두 배우)가 있는 모든 행을 검색
+
+-- SQLBook: Code
+use sqlclass_db;
+create table customer
+(customer_id smallint unsigned,
+first_name varchar(20),
+last_name varchar(20),
+birth_date date,
+spouse_id smallint unsigned,
+constraint primary key (customer_id));
+-- SQLBook: Code
+insert into customer	(customer_id,	first_name,	last_name,	birth_date,	spouse_id)
+values
+(1,	'John',	'Mayer',	'1983-05-12',	2),
+(2,	'Mary',	'Mayer',	'1990-07-30',	1),
+(3,	'Lisa',	'Ross',	'1989-04-15',	5),
+(4,	'Anna',	'Timothy',	'1988-12-26',	6),
+(5,	'Tim',	'Ross',	'1957-08-15',	3),
+(6,	'Steve',	'Donell',	'1967-07-09',	4);
+insert into customer	(customer_id,	first_name,	last_name,	birth_date)
+values (7,	'Donna',	'Trapp',	'1978-06-23');
+-- SQLBook: Code
+-- 셀프 조인 : 자기 자신에게 Join
+select c1.customer_id, 
+c1.first_name, 
+c1.last_name, 
+c1.birth_date, 
+c1.spouse_id, 
+c2.first_name as spouse_firstname, 
+c2.last_name as spouse_lastname
+from customer as c1 inner join customer as c2
+on c1.spouse_id = c2.customer_id;
+-- SQLBook: Code
+-- Active: 1706681927328@@127.0.0.1@3306@sakila
+use sakila;
+select a1.address	as addr1,	a2.address	as addr2,	a1.city_id,	a1.district
+from address	as a1
+inner join address	as a2
+where (a1.city_id	=	a2.city_id)
+and (a1.address_id	!=	a2.address_id);
