@@ -2,12 +2,14 @@ import pymysql
 
 def create_table(conn, cur):
     try:
+        delete_query = '''drop table if exists customer'''
         query = """
         create table customer(
             name varchar(10),
             category smallint,
             region varchar(10))
         """
+        cur.execute(delete_query)
         cur.execute(query)
         conn.commit()
         print('Table 생성 완료')

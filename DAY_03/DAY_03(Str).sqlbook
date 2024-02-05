@@ -111,3 +111,5 @@ SELECT replace('goodbye	world',	'goodbye',	'hello')	as replace_str;
 -- substr(문자열, 시작위치, 개수)
 -- 문자열에서 시작 위치에서 개수만큼 추출
 SELECT substr('goodbye	cruel	world',	9,	5);
+-- SQLBook: Code
+select concat("왕",right("킹갓엠퍼러마제스티추찜닭", 3))
