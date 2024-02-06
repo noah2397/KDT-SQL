@@ -80,6 +80,13 @@
 | 2024.2.01 | MySQL시작(4)- select, from ,where, group by, having, order by, 형식 문자열, 영구 테이브, 파생 테이블, 임시 테이블, 가상 테이블 | [Naver Blog Link](https://blog.naver.com/mathnoah/223340609092) | DAY2 |
 | 2024.2.01 | MySQL시작(5)-필터 | [Naver Blog Link](https://blog.naver.com/mathnoah/223340807632) | DAY2 |
 | 2024.2.01 | MYSQL시작(6) - csv 파일을 table로 바꾸기 | [Naver Blog Link](https://blog.naver.com/mathnoah/223341051021) | DAY2 |
+| 2024.2.02 | MYSQL시작(7) - 조인 | [Naver Blog Link](https://blog.naver.com/mathnoah/223341757257) | DAY3 |
+| 2024.2.02 | MYSQL시작(8) - 집  | [Naver Blog Link](https://blog.naver.com/mathnoah/223341882394) | DAY3 |
+| 2024.2.02 | MYSQL시작(9) - 데이터 생성, 조작, 변경, 작은따옴표 출력, quote,length,position,locate, strcmp,like,concat,insert,replace | [Naver Blog Link](https://blog.naver.com/mathnoah/223341972010) | DAY3 |
+| 2024.2.02 | MySQL 파이썬과 연결하기-Select, Create, Insert  | [Naver Blog Link](https://blog.naver.com/mathnoah/223342058090) | DAY3 |
+| 2024.2.05 | MYSQL시작(10) - 숫자 데이터 처리 | [Naver Blog Link](https://blog.naver.com/mathnoah/223344499193) | DAY4 |
+| 2024.2.05 | MYSQL시작(11) - Group by | [Naver Blog Link](https://blog.naver.com/mathnoah/223344643341) | DAY4 |
+
 
 
 
