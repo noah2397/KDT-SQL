@@ -1,0 +1,125 @@
+-- SQLBook: Code
+-- Active: 1706681927328@@127.0.0.1@3306@sakila
+use sakila;
+SELECT customer_id, count(*)
+FROM rental
+GROUP BY customer_id ;
+-- SQLBook: Code
+가장 많이 대여한 회원 찾기
+- group by 연산 및 order by 연산 사용 (내림 차순 정렬)
+
+SELECT customer_id, count(*)
+FROM rental
+GROUP BY customer_id
+ORDER BY 2 desc; -- 인덱스를 사용하여 정렬, count(*)가 된다
+
+SELECT customer_id, count(*)
+FROM rental
+GROUP BY customer_id
+ORDER BY count(*) desc; -- 동일한 결과를 출력
+-- SQLBook: Code
+desc payment;
+-- SQLBook: Code
+payment 테이블의 amount 열에 집계 함수 계산
+§암시적 그룹 결과
+• group by절을 사용하지 않음: 집계 함수에 의해 생성된 값
+
+SELECT max(amount) as max_amt,
+min(amount) as min_amt,
+avg(amount) as avg_amt,
+sum(amount) as tot_amt,
+count(*) as num_payments
+FROM payment;
+-- SQLBook: Code
+SELECT customer_id,
+max(amount) as max_amt,
+min(amount) as min_amt,
+avg(amount) as avg_amt,
+sum(amount) as tot_amt,
+count(*) as num_payments
+FROM payment
+GROUP BY customer_id; -- 각각의 id별로 집계함수 결과를 출력함
+-- SQLBook: Code
+고유한 값 계산
+ count() 함수 사용
+• 그룹의 모든 customer_id 수를 계산: 중복 포함
+• 모든 customer_id 중에 고유한 값에 대해서만 계산: 중복 제거(distinct 키워드)
+
+
+SELECT count(customer_id) as num_rows,count(distinct customer_id) as num_customers FROM payment;
+
+- 첫 번째 count(customer_id): payment 테이블의 행의 수를 계산
+- 두 번째 count(distinct customer_id): 중복을 제거한 customer_id 수만 계산
+-- SQLBook: Code
+집계 함수를 사용할 때 표현식 사용 가능
+ - 영화를 대여한 후 반환하기까지 걸린 최대 일 수 계산
+
+SELECT max(datediff(return_date, rental_date)) FROM rental;
+-- SQLBook: Code
+- 영화 대여 후 반납까지 평균 기간 계산
+
+SELECT avg(datediff(return_date, rental_date)) FROM rental;
+-- SQLBook: Code
+-- Active: 1706681927328@@127.0.0.1@3306@sqlclass_db
+use sqlclass_db;
+CREATE TABLE number_tbl (val smallint);
+desc number_tbl;
+INSERT INTO number_tbl VALUES(1);
+INSERT INTO number_tbl VALUES(3);
+INSERT INTO number_tbl VALUES(5);
+SELECT count(*) as num_rows,
+count(val) as num_vals,
+sum(val) as total,
+max(val) as max_val,
+avg(val) as avg_val
+FROM number_tbl;
+-- SQLBook: Code
+- number_tbl에 NULL 값 추가
+
+INSERT INTO number_tbl VALUES (NULL);
+SELECT * FROM number_tbl;
+
+SELECT count(*) as num_rows,
+count(val) as num_vals,
+sum(val) as total,
+max(val) as max_val,
+avg(val) as avg_val
+FROM number_tbl;
+• 함수들이 null 값을 만나면 무시
+• sum(), max() 및 avg() 함수의 결과는 이전과 동일
+• count(val): 이전과 동일한 3을 반환 (null값 무시)
+• count(*): 전체 행의 수를 계산 (null이 있는 행도 계산)
+-- SQLBook: Code
+use sakila;
+
+단일 열 그룹화
+ 각 배우가 출연한 영화 수 계산
+
+SELECT actor_id, count(*)
+FROM film_actor
+GROUP BY actor_id;
+-- SQLBook: Code
+§ 다중 열 그룹화
+§하나 이상의 열을 이용해서 그룹 생성
+• 각 배우들의 영화 등급별 출연 영화 수 계산
+
+SELECT fa.actor_id, f.rating, count(*)
+FROM film_actor as fa
+INNER JOIN film as f
+on fa.film_id = f.film_id
+GROUP BY fa.actor_id, f.rating
+ORDER BY 1, 2;
+-- SQLBook: Code
+SELECT extract(year from rental_date) as year,
+count(*) as how_many
+FROM rental
+GROUP BY extract(year from rental_date); -- extract를 사용하여 테이블의 행을 그룹화
+-- SQLBook: Code
+-- Active: 1706681927328@@127.0.0.1@3306@sakila
+SELECT fa.actor_id, f.rating, count(*)
+FROM film_actor as fa
+inner join film as f
+on fa.film_id = f.film_id
+GROUP BY fa.actor_id, f.rating with rollup # group by 결과로 출력된 항목들의 합계를 나타내는 방법
+ORDER BY 1,2;
+-- SQLBook: Code

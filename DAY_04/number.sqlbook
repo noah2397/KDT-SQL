@@ -1,0 +1,115 @@
+-- SQLBook: Code
+숫자 자릿수 관리
+§ ceil() 함수: 가장 가까운 정수로 올림
+• ceil(72.445) = 73
+
+§ floor() 함수: 가장 가까운 정수로 내림
+• floor(72.445) = 72
+
+§ round() 함수: 반올림
+• 소수점 자리를 정할 수 있음
+• round(72.0909, 1) = 72.1
+• round(72.0909, 2) = 72.09
+
+§ truncate(숫자, 자릿수) 함수: 자릿수 아래를 버림
+• truncate(72.0956, 1) = 72.0
+• truncate(72.0956, 2) = 72.09
+• truncate(72.0956, 3) = 72.095
+-- SQLBook: Code
+-- Active: 1706681927328@@127.0.0.1@3306@sqlclass_db
+select truncate(72.0956, 1), truncate(72.0956, 2), truncate(72.0956, 3);
+-- SQLBook: Code
+-- Active: 1706681927328@@127.0.0.1@3306@testdb
+-- sign() 함수
+-- 값이 음수이면 -1, 0이면 0, 양수이면 1을 반환
+use testdb;
+DROP TABLE IF EXISTS account;
+# account 테이블 생성 (7장 p.188)
+CREATE TABLE account
+(account_id int,
+acct_type varchar(20),
+balance float);
+INSERT INTO account (account_id, acct_type, balance)
+VALUES (123, 'MONEY MARKET', 785.22),
+(456, 'SAVINGS', 0.00),
+(789, 'CHECKING', -324.22);
+SELECT account_id, sign(balance), abs(balance) FROM account;
+-- SQLBook: Code
+-- 시간 데이터의 문자열 표시
+-- datetime 기본 형식: YYYY-MM-DD HH:MI:SS
+-- datetime 열을 2022년 8월 1일 오전 09:30 으로 표현
+-- • ‘2022-08-01 09:30:00’ 의 문자열로 구성
+
+-- MySQL 서버의 시간 데이터 처리
+-- • datetime 형식으로 표현된 문자열에서 6개의 구성요소를 분리해서 문자열을 변환
+
+-- cast() 함수
+-- - 지정한 값을 다른 데이터 타입으로 변환
+-- - cast() 함수를 이용해서 datetime값을 반환하는 쿼리 생성
+SELECT cast('2019-09-17 15:30:00' as datetime);
+-- SQLBook: Code
+-- cast() 함수
+-- date 값과 time 값을 생성
+SELECT cast('2019-09-17' as date) date_field,
+cast('108:17:57' as time) time_field;
+
+--'2019-09-17 15:30:00'
+--'2019/09/17 15:30:00'  --> 변환 가능한 날짜관련 문자열들
+--'2019,09,17,15,30,00'
+--'20190917153000'
+SELECT cast('20190917153000' as datetime);
+-- SQLBook: Code
+날짜 생성 함수
+§ str_to_date()
+• 형식 문자열의 내용에 따라 datetime, date 또는 time값을 반환
+• cast() 함수를 사용하기에 적절한 형식이 아닌 경우 사용
+• ‘September 17, 2019’ 문자열을 date 형식으로 변환
+
+SELECT str_to_date('September 17, 2019', '%M %d, %Y') as return_date;
+-- SQLBook: Code
+현재 날짜/시간 생성
+§내장 함수가 시스템 시계를 확인해서 현재 날짜 및 시간을 문자열로 반환
+§ CURRENT_DATE(), CURRENT_TIME(), CURRENT_TIMESTAMP()
+
+SELECT CURRENT_DATE(), CURRENT_TIME(), CURRENT_TIMESTAMP();
+-- SQLBook: Code
+날짜를 반환하는 시간 함수
+§ date_add()
+• 지정한 날짜에 일정 기간(일, 월, 년 등)을 더해서 다른 날짜를 생성
+
+SELECT date_add(current_date(), interval 5 day);
+-- SQLBook: Code
+-- Active: 1706681927328@@127.0.0.1@3306@sakila
+update rental
+set return_date = date_add(return_date, interval '3:27:11' HOUR_SECOND)
+where rental_id = 99999;
+-- SQLBook: Code
+날짜를 반환하는 시간 함수
+last_day(date) : 해당월의 마지막 날짜 반환
+
+select last_day('2022-08-01');
+-- SQLBook: Code
+문자열을 반환하는 시간 함수
+dayname(date) 함수 : 해당 날짜의 영어 요일 이름을 반환
+
+SELECT dayname('2022-08-01');
+-- SQLBook: Code
+문자열을 처리하는 함수
+extract() : date의 구성 요소 중 일부를 추출
+
+SELECT extract(year FROM '2019-09-18 22:19:05'); -- 년도만 뽑아냄
+-- SQLBook: Code
+숫자를 반환하는 시간 함수
+datediff(date1, date2) : date1과 date2의 차이를 일 단위로 반환
+
+SELECT datediff('2019-09-03', '2019-06-21');
+
+-- SQLBook: Code
+변환 함수
+cast() : 데이터를 한 유형에서 다른 유형으로 변환할 때 사용
+cast(데이터 as 타입)
+
+SELECT cast('1456328' as signed integer);
+SELECT cast('20220101' as date);
+SELECT cast(20220101 as char);
+SELECT cast(now() as signed);
